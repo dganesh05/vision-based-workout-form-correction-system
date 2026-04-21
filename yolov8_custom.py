@@ -243,7 +243,7 @@ def parse_args():
         description="YOLOv8 pose with hard attention to keep only the primary subject."
     )
     parser.add_argument("--weights", default="yolov8n-pose.pt", help="YOLOv8 pose weights path")
-    parser.add_argument("--source", default="sample_video.MOV", help="Input video path")
+    parser.add_argument("--source", default="sample_video.MP4", help="Input video path")
     parser.add_argument(
         "--output-video",
         default="runs/pose/primary/primary_subject.mp4",

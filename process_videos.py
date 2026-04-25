@@ -12,7 +12,7 @@ output_keypoint_folder = "outputs/keypoints"
 os.makedirs(output_video_folder, exist_ok=True)
 os.makedirs(output_keypoint_folder, exist_ok=True)
 
-video_extensions = (".mp4", ".mov", ".MOV", ".avi", ".mkv")
+video_extensions = (".mp4", ".mov", ".avi", ".mkv", ".MOV")
 
 for filename in os.listdir(input_folder):
     if not filename.endswith(video_extensions):
@@ -39,12 +39,16 @@ for filename in os.listdir(input_folder):
     all_frames = []
     frame_idx = 0
 
+    print()
+    print("===================================")
+    print(f"Processing: {filename}")
+
     while True:
         success, frame = cap.read()
         if not success:
             break
 
-        results = model(frame)
+        results = model(frame, conf=0.3, verbose=False)
         annotated_frame = results[0].plot()
         out.write(annotated_frame)
 
@@ -86,4 +90,7 @@ for filename in os.listdir(input_folder):
     with open(output_keypoint_path, "w") as f:
         json.dump(all_frames, f, indent=2)
 
-    print(f"Finished {filename}")
+    print(f"Saved video to: {output_video_path}")
+    print(f"Saved keypoints to: {output_keypoint_path}")
+    print("Finished processing")
+    print("===================================")

@@ -1,1 +1,6 @@
 video_id,filename,view_angle,label,label_confidence,source,reason_for_good_label,exercise_phase_visible,notes
+G001,G001_side.mp4,side,good,high,youtube expert demo,Clear hip hinge proper depth upright torso,yes,Side view golden reference
+G002,G002_45.mp4,45,good,high,youtube expert demo,Full depth stable knees controlled movement neutral spine,yes,45 degree golden reference
+G003,G003_side.mp4,side,good,high,youtube expert demo,Stable descent and ascent knees track correctly,yes,Side view golden reference
+G004,G004_side.mp4,side,good,high,youtube expert demo,Controlled squat good alignment no instability,yes,Side view golden reference
+G005,G005_45.mp4,45,good,high,youtube expert demo,Consistent posture balanced movement no knee collapse,yes,45 degree golden reference

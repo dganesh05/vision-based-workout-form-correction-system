@@ -1,6 +1,8 @@
+import argparse
 import json
 import math
-import os
+from pathlib import Path
+
 
 def calculate_angle(a, b, c):
     ab = [a[0] - b[0], a[1] - b[1]]
@@ -11,88 +13,106 @@ def calculate_angle(a, b, c):
     mag_cb = math.sqrt(cb[0] ** 2 + cb[1] ** 2)
 
     if mag_ab == 0 or mag_cb == 0:
-        return 0
+        return None
 
     cos_angle = dot / (mag_ab * mag_cb)
     cos_angle = max(min(cos_angle, 1), -1)
-
     return math.degrees(math.acos(cos_angle))
 
-def distance(p1, p2):
-    return math.sqrt((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)
 
-def process_file(json_path):
-    with open(json_path, "r") as f:
-        data = json.load(f)
+def summary_stats(values):
+    if not values:
+        return None, None, None
+    return sum(values) / len(values), min(values), max(values)
 
-    min_knee = 180
-    max_torso = 0
 
-    bad_torso = 0
-    valgus = 0
-    total = 0
+def process_file(json_path: Path):
+    data = json.loads(json_path.read_text(encoding="utf-8"))
+    total_frames = len(data)
+
+    knee_angles = []
+    hip_angles = []
+    torso_angles = []
+    per_frame_angles = []
 
     for frame in data:
-        if len(frame["people"]) == 0:
+        people = frame.get("people", [])
+        if not people:
             continue
 
-        total += 1
+        keypoints = people[0].get("keypoints", [])
+        if len(keypoints) < 17:
+            continue
 
-        kp = frame["people"][0]["keypoints"]
+        # Consistent side choice: left-side joints
+        shoulder = (keypoints[5]["x"], keypoints[5]["y"])
+        hip = (keypoints[11]["x"], keypoints[11]["y"])
+        knee = (keypoints[13]["x"], keypoints[13]["y"])
+        ankle = (keypoints[15]["x"], keypoints[15]["y"])
 
-        shoulder = (kp[5]["x"], kp[5]["y"])
-        hip = (kp[11]["x"], kp[11]["y"])
-        knee = (kp[13]["x"], kp[13]["y"])
-        ankle = (kp[15]["x"], kp[15]["y"])
-
-        hip_r = (kp[12]["x"], kp[12]["y"])
-        knee_r = (kp[14]["x"], kp[14]["y"])
-        ankle_r = (kp[16]["x"], kp[16]["y"])
-
-        vertical = (hip[0], hip[1] - 100)
-
+        # Knee: hip -> knee -> ankle
         knee_angle = calculate_angle(hip, knee, ankle)
+        # Hip: shoulder -> hip -> knee
+        hip_angle = calculate_angle(shoulder, hip, knee)
+        # Torso: angle between vertical axis and shoulder -> hip line
+        vertical = (hip[0], hip[1] - 100)
         torso_angle = calculate_angle(shoulder, hip, vertical)
 
-        if knee_angle < min_knee:
-            min_knee = knee_angle
+        if knee_angle is not None:
+            knee_angles.append(knee_angle)
+        if hip_angle is not None:
+            hip_angles.append(hip_angle)
+        if torso_angle is not None:
+            torso_angles.append(torso_angle)
 
-        if torso_angle > max_torso:
-            max_torso = torso_angle
+        per_frame_angles.append(
+            {
+                "frame": frame.get("frame"),
+                "knee_angle": knee_angle,
+                "hip_angle": hip_angle,
+                "torso_angle": torso_angle,
+            }
+        )
 
-        if torso_angle > 40:
-            bad_torso += 1
+    avg_knee, min_knee, max_knee = summary_stats(knee_angles)
+    avg_hip, min_hip, max_hip = summary_stats(hip_angles)
+    avg_torso, min_torso, max_torso = summary_stats(torso_angles)
 
-        left_diff = abs(knee[0] - ankle[0]) / (distance(hip, ankle) + 1e-6)
-        right_diff = abs(knee_r[0] - ankle_r[0]) / (distance(hip_r, ankle_r) + 1e-6)
+    return {
+        "video_id": json_path.stem.replace("_keypoints", ""),
+        "total_frames": total_frames,
+        "frames_with_person": len(per_frame_angles),
+        "avg_knee_angle": avg_knee,
+        "min_knee_angle": min_knee,
+        "max_knee_angle": max_knee,
+        "avg_hip_angle": avg_hip,
+        "min_hip_angle": min_hip,
+        "max_hip_angle": max_hip,
+        "avg_torso_angle": avg_torso,
+        "min_torso_angle": min_torso,
+        "max_torso_angle": max_torso,
+        "per_frame_angles": per_frame_angles,
+    }
 
-        if left_diff > 0.15 or right_diff > 0.15:
-            valgus += 1
 
-    depth_score = 100 if min_knee < 80 else 70 if min_knee < 100 else 40
-    torso_score = 100 - (bad_torso / total) * 100
-    knee_score = 100 - (valgus / total) * 100
+def process_all_files(input_dir: Path, output_dir: Path):
+    output_dir.mkdir(parents=True, exist_ok=True)
+    keypoint_files = sorted(input_dir.glob("*_keypoints.json"))
 
-    final_score = (0.4 * depth_score) + (0.3 * torso_score) + (0.3 * knee_score)
+    for keypoint_file in keypoint_files:
+        result = process_file(keypoint_file)
+        output_path = output_dir / f"{result['video_id']}_angles.json"
+        output_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+        print(f"Saved angles: {output_path}")
 
-    print()
-    print("===================================")
-    print(f"File: {json_path}")
-    print(f"Final Form Score: {final_score:.2f}/100")
 
-    if final_score > 85:
-        print("Overall: Excellent form")
-    elif final_score > 70:
-        print("Overall: Good form")
-    else:
-        print("Overall: Needs improvement")
+def parse_args():
+    parser = argparse.ArgumentParser(description="Compute knee/hip/torso angles from keypoint JSON files.")
+    parser.add_argument("--input-dir", default="outputs/keypoints", help="Input keypoint JSON directory.")
+    parser.add_argument("--output-dir", default="outputs/angles", help="Output angle JSON directory.")
+    return parser.parse_args()
 
-    print("===================================")
 
-def process_all_files(folder_path):
-    for file in os.listdir(folder_path):
-        if file.endswith(".json"):
-            full_path = os.path.join(folder_path, file)
-            process_file(full_path)
-
-process_all_files("outputs/keypoints")
+if __name__ == "__main__":
+    args = parse_args()
+    process_all_files(Path(args.input_dir), Path(args.output_dir))

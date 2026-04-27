@@ -1,248 +1,224 @@
 # Vision-Based Workout Form Correction System
 
-Group 3 | ITCS 4152
+## Branch: feedback-transformer
 
-Vision-based workout form correction project focused on safer strength training through pose estimation and biomechanics analysis. The long-term objective is to move from 2D keypoints to 3D form understanding and generate actionable feedback such as "go deeper" or "keep knees aligned".
+This branch contains the full squat analysis and feedback pipeline for our Computer Vision project.
 
-## Table of Contents
+The goal is to automatically evaluate squat form using pose estimation, angle extraction, machine learning classification, and personalized feedback generation.
 
-- [Who This README Is For](#who-this-readme-is-for)
-- [Project Status](#project-status)
-- [Problem and Motivation](#problem-and-motivation)
-- [System Pipeline](#system-pipeline)
-- [Repository Structure](#repository-structure)
-- [Quick Start](#quick-start)
-- [Current Usage (Implemented)](#current-usage-implemented)
-- [Roadmap Usage (Planned)](#roadmap-usage-planned)
-- [Data Collection and Dataset Design](#data-collection-and-dataset-design)
-- [Biomechanical Features and Analysis](#biomechanical-features-and-analysis)
-- [Reproducibility Notes](#reproducibility-notes)
-- [Evaluation Plan](#evaluation-plan)
-- [Contributing](#contributing)
-- [Citation and Acknowledgments](#citation-and-acknowledgments)
-- [License](#license)
+---
 
-## Who This README Is For
+## What I Worked On
 
-This README is intentionally structured for multiple audiences:
+I focused mainly on:
 
-- Users and integrators who want to run the project and adapt it into larger systems.
-- Researchers and students who want to reproduce the pipeline and compare methods.
-- Contributors who want to add new models, features, and datasets.
-- Evaluators and instructors who need a clear separation between implemented functionality and planned work.
+- rep-by-rep squat detection
+- angle extraction and biomechanics analysis
+- training dataset creation
+- machine learning model training
+- prediction system
+- personalized feedback engine
 
-## Project Status
+This branch handles the full feedback + ML pipeline.
 
-The project currently contains an early implementation of 2D pose extraction and a defined technical roadmap for full 3D workout form correction.
+---
 
-| Pipeline Stage | Status | Notes |
-| --- | --- | --- |
-| Video input processing | Implemented (basic) | Single-view workflow in notebook form. |
-| 2D pose extraction (YOLOv8-Pose) | Implemented (initial) | Available via notebook workflow. |
-| 3D pose lifting (TGMF-Pose / GLA-GCN / VideoPose3D) | Planned / In progress | Methodology defined; integration pending. |
-| Feature extraction (angles, symmetry, depth) | Planned | Target features identified. |
-| Anomaly detection (Mahalanobis + thresholding/ML) | Planned | Design defined; implementation pending. |
-| User feedback generation | Planned | Feedback taxonomy defined. |
+## Project Flow
 
-## Problem and Motivation
+### Step 1 — Video Input
 
-Incorrect lifting form is a common source of preventable training injuries. Most lightweight consumer systems rely only on 2D tracking, which can miss depth-dependent biomechanical issues such as:
+User records a squat video from front, back, or side angle.
 
-- Knee valgus
-- Insufficient squat depth
-- Trunk lean and postural collapse
+↓
 
-This project addresses those limitations by combining robust pose estimation with planned 3D reconstruction and temporal biomechanical analysis.
+### Step 2 — MotionBERT / Pose Estimation
 
-## System Pipeline
+MotionBERT extracts 3D body keypoints from the video.
 
-The target architecture is:
+This gives:
 
-Video Input -> 2D Pose -> 3D Pose -> Feature Extraction -> Analysis -> Feedback
+- body joint coordinates
+- frame-by-frame pose landmarks
 
-### Stage 1: Data Collection
+↓
 
-- Bodyweight squat videos are captured using smartphone + tripod setups.
-- Multi-view design uses up to 8 recording angles for stronger geometric coverage.
-- Subject diversity target includes height, weight, gender, and lifting experience variation.
-- Correct-form references are aligned against gym-guided baseline biomechanics.
+### Step 3 — Angle Extraction (`compute_angles.py`)
 
-### Stage 2: Pose Estimation and 3D Lifting
+Using the keypoints, we calculate:
 
-- 2D extraction model: YOLOv8-Pose.
-- Annotation tooling: Labelme (for custom/edge-case labeling).
-- Planned 3D lifting models:
-	- TGMF-Pose
-	- GLA-GCN
-	- VideoPose3D
-- Heavy training/inference workloads are designed for HPC execution using Python + PyTorch.
+- Right Knee Angle
+- Left Knee Angle
+- Right Hip Angle
+- Left Hip Angle
+- Average Knee Angle
+- Average Hip Angle
+- Spine Lean
+- Knee Symmetry
 
-### Stage 3: Feature Extraction and Temporal Analysis
+The script also detects squat reps using the bottom position of each squat (local minimum knee angle).
 
-- Temporal smoothing across multiple frames for robust motion understanding.
-- Planned sequence alignment with Dynamic Time Warping (DTW) to normalize speed differences.
-- Joint kinematics and symmetry features computed from reconstructed pose trajectories.
+Output:
 
-### Stage 4: Anomaly Detection and Feedback
+final_features.csv
 
-- Planned Mahalanobis-distance-based outlier scoring across angle-feature vectors.
-- Hybrid rule-based + learned thresholds for form classification.
-- User-facing feedback examples:
-	- Go deeper
-	- Keep knees aligned
-	- Maintain upright posture
+↓
 
-## Repository Structure
+### Step 4 — Build Training Dataset (`build_training_data_v2.py`)
 
-- README.md: Project overview, usage, reproducibility, and contribution guidance.
-- readme_details: Detailed architecture and methodology notes used to build this README.
-- extract_2d_pose.ipynb: Notebook for current 2D extraction workflow.
-- requirements.txt: Current Python dependencies.
-- LICENSE: MIT license.
+This combines:
 
-## Quick Start
+- data/angles_csv/correct
+- data/angles_csv/incorrect
 
-### 1. Clone and enter project
+and creates the final rep-by-rep training dataset.
 
-```bash
-git clone <your-fork-or-repo-url>
-cd vision-based-workout-form-correction-system
-```
+Output:
 
-### 2. Create and activate a virtual environment
+training_data_v2.csv
 
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
+Current dataset size:
 
-### 3. Install dependencies
+- 131 total reps
 
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
+↓
 
-### 4. Launch notebook workflow
+### Step 5 — Model Training (`train_model_v2.py`)
 
-```bash
-jupyter notebook
-```
+We train a Random Forest Classifier using:
 
-Open extract_2d_pose.ipynb and run cells in order.
+Features:
 
-## Current Usage (Implemented)
+- avg_knee_angle
+- avg_hip_angle
+- spine_lean
+- knee_symmetry
 
-Current repository functionality is centered on 2D pose extraction.
+Important:
 
-1. Prepare an input video path in extract_2d_pose.ipynb.
-2. Run notebook cells sequentially.
-3. Inspect generated keypoint outputs and visual overlays.
+No hardcoded rule-based labels are used for model training.
 
-Notes:
+The model learns from reviewed squat data instead of fixed threshold logic.
 
-- The notebook is the primary entry point in the current codebase.
-- The full 3D correction pipeline is not fully wired in this repository yet.
+Final Model Performance:
 
-## Roadmap Usage (Planned)
+- Accuracy: 88.89%
 
-Planned usage flow after full integration:
+Feature Importance:
 
-1. Ingest user squat video.
-2. Run 2D keypoint extraction.
-3. Lift to 3D pose sequence.
-4. Compute temporal biomechanical features.
-5. Classify deviations from correct form.
-6. Return interpretable correction feedback.
+1. Knee Symmetry
+2. Hip Angle
+3. Knee Angle
+4. Spine Lean
 
-## Data Collection and Dataset Design
+This means balance and symmetry were the strongest predictors.
 
-Planned/ongoing dataset design principles:
+Output:
 
-- Exercise focus: bodyweight squats (initial scope).
-- Multi-angle captures: up to 8 camera viewpoints.
-- Population size target: 15-20 participants.
-- Demographic and anthropometric diversity encouraged.
-- Ground truth assisted by gym-based reference practice.
+squat_model.pkl
 
-If you are contributing data, include metadata for viewpoint, subject profile category, and labeling quality notes.
+↓
 
-## Biomechanical Features and Analysis
+### Step 6 — Prediction System (`predict.py`)
 
-Core features targeted for correction quality:
+This loads the trained model and predicts squat quality for new squat inputs.
 
-- Knee angle
-- Hip angle
-- Torso alignment angle
-- Squat depth
-- Left-right symmetry
+Prediction classes:
 
-These features are intended to be aggregated over time, not only at single frames, to improve stability.
+- Excellent Squat
+- Good Squat + Minor Improvements
+- Needs Major Improvement
 
-## Reproducibility Notes
+It also gives explainable feedback like:
 
-To make experiments easier to reproduce:
+- Go deeper
+- Improve balance
+- Keep chest up
+- Improve hip positioning
 
-- Keep raw videos and processed outputs in stable, documented folder layouts.
-- Record model versions and checkpoint sources when adding 3D lifting experiments.
-- Track preprocessing settings (frame rate, resizing, keypoint confidence thresholds).
-- Log experiment parameters and evaluation results in a run sheet.
+This acts as the final AI Personal Squat Coach.
 
-Recommended future folders (to be created as implementation expands):
+---
 
-- data/raw
-- data/processed
-- outputs/poses_2d
-- outputs/poses_3d
-- outputs/analysis
-- experiments
+## Files Added / Updated
 
-## Evaluation Plan
+### Core Files
 
-Evaluation will compare predicted form quality against validated references and include:
+- compute_angles.py
+- build_training_data.py
+- build_training_data_v2.py
+- feedback_engine.py
+- train_model.py
+- train_model_v2.py
+- predict.py
 
-- Per-feature error or deviation scoring.
-- Form anomaly detection quality.
-- Consistency across camera angles and subject variation.
-- Actionability of feedback.
+### CSV Outputs
 
-Current repository state:
+- final_features.csv
+- final_feedback_results.csv
+- training_data.csv
+- training_data_v2.csv
 
-- Evaluation scripts and benchmark tables are not yet published here.
-- This section should be updated as soon as metrics are available.
+### Model File
 
-## Contributing
+- squat_model.pkl
 
-Contributions are welcome from engineering, ML, and biomechanics perspectives.
+---
 
-### Suggested contribution workflow
+## How To Review My Work
 
-1. Open an issue describing the proposed change.
-2. Fork and create a focused branch.
-3. Add or update code/notebooks and documentation.
-4. Include reproducibility notes for new experiments.
-5. Open a pull request with a clear summary and test evidence.
+### 1. Pull this branch
 
-### High-impact contribution areas
+git checkout feedback-transformer
+git pull origin feedback-transformer
 
-- 3D lifting model integration (TGMF-Pose, GLA-GCN, VideoPose3D)
-- Feature extraction implementations
-- Form-classification and feedback logic
-- Dataset tooling and annotation pipelines
-- Evaluation and visualization tooling
+---
 
-A dedicated CONTRIBUTING.md can be added in a future update; until then, use this section as the baseline process.
+### 2. Build training dataset
 
-## Citation and Acknowledgments
+python feedback/build_training_data_v2.py
 
-If this project supports your work, please cite it in your reports/papers once a formal citation format is published.
+This generates:
 
-Acknowledgments:
+training_data_v2.csv
 
-- ITCS 4152 course support
-- Group 3 team members
-- Open-source pose estimation research communities
+---
 
-## License
+### 3. Train the model
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+python feedback/train_model_v2.py
+
+This trains the Random Forest model and saves:
+
+squat_model.pkl
+
+---
+
+### 4. Run prediction demo
+
+python feedback/predict.py
+
+This shows final squat prediction + personalized feedback output.
+
+---
+
+## Final Goal
+
+Final system should work like:
+
+Video Upload
+→ MotionBERT
+→ 3D Keypoints
+→ Angle Extraction
+→ Model Prediction
+→ Feedback Engine
+→ Final Squat Coaching Output
+
+---
+
+## Notes
+
+- feedback logic is explainable and biomechanics-based
+- model training avoids hardcoded threshold labels
+- real squat videos are used for validation
+- more video testing will improve final accuracy
+

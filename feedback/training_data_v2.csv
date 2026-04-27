@@ -1,0 +1,132 @@
+file_name,rep_number,bottom_frame,avg_knee_angle,avg_hip_angle,spine_lean,knee_symmetry,quality_score,status,label
+correct__IMG_9795_angles.csv,1,21,68.42,135.08,169.65,15.53,95,Excellent Squat,0
+correct__IMG_9795_angles.csv,2,38,127.52,151.76,168.28,35.42,90,Excellent Squat,0
+correct__IMG_9795_angles.csv,3,79,69.38,132.56,170.47,0.15,100,Excellent Squat,0
+correct__5a10e657-8f8d-4685-a977-d60016b4e7db_angles.csv,1,50,143.25,151.97,173.71,3.1,92,Excellent Squat,0
+correct__5a10e657-8f8d-4685-a977-d60016b4e7db_angles.csv,2,84,142.84,151.14,174.67,1.75,92,Excellent Squat,0
+correct__Copy of IMG_8542_angles.csv,1,21,75.23,79.19,173.59,24.85,87,Good + Minor Improvements,1
+correct__Copy of IMG_8542_angles.csv,2,57,78.31,81.03,174.65,36.26,82,Good + Minor Improvements,1
+correct__IMG_9776_angles.csv,1,4,121.48,151.45,170.24,9.39,100,Excellent Squat,0
+correct__IMG_9776_angles.csv,2,30,77.84,131.77,171.13,48.52,90,Excellent Squat,0
+correct__IMG_9776_angles.csv,3,66,77.05,134.92,170.34,56.07,90,Excellent Squat,0
+correct__IMG_9776_angles.csv,4,103,78.4,136.33,169.16,62.54,90,Excellent Squat,0
+correct__IMG_6998_angles.csv,1,4,137.7,107.89,171.51,8.19,88,Good + Minor Improvements,1
+correct__IMG_6998_angles.csv,2,23,61.02,55.5,174.19,10.0,92,Excellent Squat,0
+correct__IMG_6998_angles.csv,3,52,60.74,64.36,174.09,6.55,92,Excellent Squat,0
+correct__IMG_6998_angles.csv,4,79,58.64,67.42,178.06,5.88,92,Excellent Squat,0
+correct__IMG_6998_angles.csv,5,108,57.76,67.13,177.2,2.16,92,Excellent Squat,0
+correct__IMG_6998_angles.csv,6,136,59.88,67.17,176.7,2.53,92,Excellent Squat,0
+correct__IMG_6998_angles.csv,7,163,114.89,116.95,171.45,3.59,96,Excellent Squat,0
+correct__IMG_6989_angles.csv,1,44,54.69,124.7,174.01,1.22,96,Excellent Squat,0
+correct__IMG_6989_angles.csv,2,75,55.94,123.25,173.79,0.77,96,Excellent Squat,0
+correct__IMG_6989_angles.csv,3,108,54.03,120.29,174.61,0.78,96,Excellent Squat,0
+correct__IMG_6989_angles.csv,4,129,134.08,141.35,175.6,1.04,92,Excellent Squat,0
+correct__IMG_6989_angles.csv,5,161,137.5,140.75,174.91,8.21,92,Excellent Squat,0
+correct__IMG_6989_angles.csv,6,178,55.71,113.34,177.88,6.0,96,Excellent Squat,0
+correct__IMG_6989_angles.csv,7,201,134.96,131.56,153.83,40.48,77,Good + Minor Improvements,1
+correct__IMG_6995_angles.csv,1,30,72.89,138.41,176.06,3.02,100,Excellent Squat,0
+correct__IMG_6995_angles.csv,2,68,72.89,131.81,176.17,6.26,100,Excellent Squat,0
+correct__IMG_6995_angles.csv,3,100,73.39,129.91,177.28,3.77,100,Excellent Squat,0
+correct__IMG_6995_angles.csv,4,134,74.7,128.87,174.72,4.93,100,Excellent Squat,0
+correct__IMG_6995_angles.csv,5,166,73.72,134.23,171.38,5.96,100,Excellent Squat,0
+correct__IMG_7007_angles.csv,1,25,58.03,55.04,174.11,9.09,92,Excellent Squat,0
+correct__IMG_7007_angles.csv,2,62,63.8,62.57,173.32,4.27,92,Excellent Squat,0
+correct__IMG_7007_angles.csv,3,100,63.98,64.97,175.15,6.46,92,Excellent Squat,0
+correct__IMG_7007_angles.csv,4,121,142.6,121.91,176.66,5.97,88,Good + Minor Improvements,1
+correct__IMG_8555_angles.csv,1,25,76.35,121.15,171.06,13.62,96,Excellent Squat,0
+correct__IMG_6992_angles.csv,1,8,101.82,94.8,173.41,3.84,96,Excellent Squat,0
+correct__IMG_6992_angles.csv,2,40,37.4,57.36,175.52,2.63,92,Excellent Squat,0
+correct__IMG_6992_angles.csv,3,70,30.78,59.12,176.37,1.51,92,Excellent Squat,0
+correct__IMG_6992_angles.csv,4,100,24.3,63.5,176.72,0.02,92,Excellent Squat,0
+correct__IMG_6992_angles.csv,5,118,113.12,115.31,173.59,5.54,96,Excellent Squat,0
+correct__Copy of IMG_8540_angles.csv,1,22,94.86,110.83,172.21,26.03,86,Good + Minor Improvements,1
+correct__IMG_9774_angles.csv,1,47,64.87,100.28,170.65,2.46,96,Excellent Squat,0
+correct__IMG_9774_angles.csv,2,79,60.62,97.56,171.65,0.96,96,Excellent Squat,0
+correct__IMG_9774_angles.csv,3,111,62.61,93.32,171.51,0.18,96,Excellent Squat,0
+correct__IMG_6997_angles.csv,1,25,73.61,84.08,176.99,13.99,92,Excellent Squat,0
+correct__IMG_6997_angles.csv,2,56,73.52,88.47,177.48,11.96,92,Excellent Squat,0
+correct__IMG_6997_angles.csv,3,86,74.57,94.8,178.35,9.16,96,Excellent Squat,0
+correct__IMG_6997_angles.csv,4,118,73.29,94.53,178.4,7.68,96,Excellent Squat,0
+correct__IMG_6997_angles.csv,5,148,74.36,95.15,177.68,9.58,96,Excellent Squat,0
+correct__IMG_6997_angles.csv,6,244,62.0,60.86,177.4,25.46,82,Good + Minor Improvements,1
+correct__IMG_6997_angles.csv,7,272,64.64,63.75,177.88,23.54,87,Good + Minor Improvements,1
+correct__IMG_6997_angles.csv,8,302,61.12,62.55,178.32,23.96,87,Good + Minor Improvements,1
+correct__IMG_6997_angles.csv,9,331,62.79,64.46,178.48,22.76,87,Good + Minor Improvements,1
+correct__IMG_7005_angles.csv,1,30,67.8,97.57,177.69,14.26,96,Excellent Squat,0
+correct__IMG_7005_angles.csv,2,69,64.93,93.25,177.6,17.36,91,Excellent Squat,0
+correct__IMG_7005_angles.csv,3,110,62.35,90.55,176.38,11.71,96,Excellent Squat,0
+correct__IMG_7005_angles.csv,4,151,68.97,96.31,177.57,12.72,96,Excellent Squat,0
+correct__IMG_7005_angles.csv,5,195,68.1,97.74,175.86,8.64,96,Excellent Squat,0
+correct__IMG_8557_angles.csv,1,37,66.56,71.74,174.18,18.62,87,Good + Minor Improvements,1
+correct__IMG_8536_angles.csv,1,3,106.48,95.08,175.63,4.04,96,Excellent Squat,0
+correct__IMG_8536_angles.csv,2,22,24.53,87.49,175.49,0.72,92,Excellent Squat,0
+correct__IMG_8536_angles.csv,3,41,26.7,91.17,176.04,1.15,96,Excellent Squat,0
+correct__IMG_6991_angles.csv,1,39,74.49,87.66,176.17,4.04,92,Excellent Squat,0
+correct__IMG_6991_angles.csv,2,70,70.08,85.77,174.51,2.54,92,Excellent Squat,0
+correct__IMG_6991_angles.csv,3,101,67.46,84.97,177.35,6.73,92,Excellent Squat,0
+correct__IMG_6991_angles.csv,4,132,68.03,84.4,179.22,3.31,92,Excellent Squat,0
+correct__IMG_6991_angles.csv,5,165,69.65,88.06,179.1,4.9,92,Excellent Squat,0
+correct__IMG_6991_angles.csv,6,198,68.33,86.61,178.76,2.15,92,Excellent Squat,0
+correct__IMG_7003_angles.csv,1,32,69.91,121.65,166.15,11.33,96,Excellent Squat,0
+correct__IMG_7003_angles.csv,2,72,74.22,126.38,167.52,16.46,95,Excellent Squat,0
+correct__IMG_7003_angles.csv,3,112,77.03,126.25,170.21,26.43,90,Excellent Squat,0
+correct__IMG_7003_angles.csv,4,152,75.67,130.04,174.31,23.6,95,Excellent Squat,0
+correct__IMG_7003_angles.csv,5,192,74.6,127.77,173.24,17.01,95,Excellent Squat,0
+correct__IMG_9777_angles.csv,1,30,59.9,82.14,178.34,8.64,92,Excellent Squat,0
+correct__IMG_9777_angles.csv,2,70,60.8,79.62,176.52,7.99,92,Excellent Squat,0
+correct__IMG_9777_angles.csv,3,109,60.88,80.6,175.66,4.06,92,Excellent Squat,0
+correct__mindbodysoul_angles.csv,1,17,81.52,112.58,175.17,4.83,96,Excellent Squat,0
+correct__mindbodysoul_angles.csv,2,40,78.4,109.05,175.44,6.63,96,Excellent Squat,0
+correct__mindbodysoul_angles.csv,3,63,77.39,106.29,176.38,4.49,96,Excellent Squat,0
+correct__Copy of IMG_8544_angles.csv,1,18,101.12,137.94,162.32,28.22,90,Excellent Squat,0
+correct__IMG_8564_angles.csv,1,10,49.71,107.69,169.46,4.78,96,Excellent Squat,0
+correct__Copy of IMG_8541_angles.csv,1,6,75.9,67.03,176.41,35.07,82,Good + Minor Improvements,1
+correct__Copy of IMG_8541_angles.csv,2,46,79.74,66.99,174.67,32.0,82,Good + Minor Improvements,1
+incorrect__IMG_9754_angles.csv,1,7,69.89,94.86,156.93,9.33,91,Excellent Squat,0
+incorrect__IMG_9754_angles.csv,2,29,121.57,128.86,173.04,5.67,100,Excellent Squat,0
+incorrect__IMG_9754_angles.csv,3,51,75.07,86.19,159.7,13.86,87,Good + Minor Improvements,1
+incorrect__IMG_9754_angles.csv,4,73,134.53,129.94,174.23,1.89,92,Excellent Squat,0
+incorrect__IMG_9754_angles.csv,5,102,74.69,85.44,156.76,7.02,87,Good + Minor Improvements,1
+incorrect__IMG_9754_angles.csv,6,123,128.07,129.0,176.47,5.58,100,Excellent Squat,0
+incorrect__IMG_9754_angles.csv,7,142,128.21,122.59,175.88,6.93,96,Excellent Squat,0
+incorrect__IMG_9754_angles.csv,8,161,128.52,123.69,178.27,11.61,96,Excellent Squat,0
+incorrect__IMG_9754_angles.csv,9,182,74.82,91.17,156.68,9.02,91,Excellent Squat,0
+incorrect__IMG_9754_angles.csv,10,199,134.0,128.92,176.35,1.75,92,Excellent Squat,0
+incorrect__Copy of IMG_8551_angles.csv,1,33,106.62,137.48,174.54,53.78,90,Excellent Squat,0
+incorrect__Copy of IMG_8551_angles.csv,2,75,107.47,136.38,176.49,51.65,90,Excellent Squat,0
+incorrect__IMG_9958_angles.csv,1,1,127.12,156.35,150.21,2.96,95,Excellent Squat,0
+incorrect__IMG_9958_angles.csv,2,41,80.84,132.78,174.05,48.14,90,Excellent Squat,0
+incorrect__IMG_9958_angles.csv,3,80,87.38,132.95,175.71,54.72,90,Excellent Squat,0
+incorrect__anatomy_angles.csv,1,26,63.96,71.97,170.91,6.19,92,Excellent Squat,0
+incorrect__Copy of IMG_8548_angles.csv,1,29,78.74,80.25,174.03,18.76,87,Good + Minor Improvements,1
+incorrect__IMG_9794_angles.csv,1,7,135.85,149.86,173.22,12.22,92,Excellent Squat,0
+incorrect__IMG_9794_angles.csv,2,26,78.27,84.37,166.32,24.43,87,Good + Minor Improvements,1
+incorrect__IMG_9794_angles.csv,3,53,80.12,84.54,167.9,24.98,87,Good + Minor Improvements,1
+incorrect__IMG_9794_angles.csv,4,75,138.47,153.08,172.63,25.44,82,Good + Minor Improvements,1
+incorrect__IMG_9794_angles.csv,5,94,85.26,87.57,171.26,27.72,82,Good + Minor Improvements,1
+incorrect__IMG_9957_angles.csv,1,2,114.27,150.08,171.45,15.87,95,Excellent Squat,0
+incorrect__IMG_9957_angles.csv,2,21,118.18,150.32,172.42,30.11,90,Excellent Squat,0
+incorrect__IMG_9957_angles.csv,3,39,122.47,154.33,173.24,20.34,95,Excellent Squat,0
+incorrect__IMG_9957_angles.csv,4,71,96.24,118.92,176.93,22.54,91,Excellent Squat,0
+incorrect__IMG_9957_angles.csv,5,87,127.71,159.6,176.38,30.41,90,Excellent Squat,0
+incorrect__IMG_9957_angles.csv,6,108,91.23,121.65,176.45,31.07,86,Good + Minor Improvements,1
+incorrect__IMG_9769_angles.csv,1,53,88.74,91.24,174.17,16.65,91,Excellent Squat,0
+incorrect__IMG_9769_angles.csv,2,102,84.09,88.54,173.79,9.51,92,Excellent Squat,0
+incorrect__Copy of IMG_8547_angles.csv,1,42,70.2,130.62,156.22,1.01,95,Excellent Squat,0
+incorrect__Copy of IMG_8547_angles.csv,2,77,69.21,130.86,156.37,1.68,95,Excellent Squat,0
+incorrect__Copy of IMG_8549_angles.csv,1,18,82.22,98.25,175.63,27.12,86,Good + Minor Improvements,1
+incorrect__Copy of IMG_8549_angles.csv,2,63,83.15,95.78,175.18,34.55,86,Good + Minor Improvements,1
+incorrect__IMG_9157 (1)_angles.csv,1,24,65.32,100.35,177.35,5.78,96,Excellent Squat,0
+incorrect__IMG_9157 (1)_angles.csv,2,55,65.49,99.32,176.46,3.38,96,Excellent Squat,0
+incorrect__IMG_9157 (1)_angles.csv,3,86,61.2,95.8,174.85,6.23,96,Excellent Squat,0
+incorrect__IMG_9755_angles.csv,1,30,83.87,93.91,176.32,9.87,96,Excellent Squat,0
+incorrect__IMG_9755_angles.csv,2,80,79.76,93.83,174.52,15.34,91,Excellent Squat,0
+incorrect__IMG_9755_angles.csv,3,129,89.23,95.03,175.5,12.26,96,Excellent Squat,0
+incorrect__IMG_9768_angles.csv,1,16,140.31,158.84,163.07,18.97,87,Good + Minor Improvements,1
+incorrect__IMG_9768_angles.csv,2,41,77.31,110.83,155.51,14.35,91,Excellent Squat,0
+incorrect__IMG_9768_angles.csv,3,91,99.7,121.49,153.18,10.16,91,Excellent Squat,0
+incorrect__Cap 2026-04-26 at 19.27.59 (online-video-cutter.com)_angles.csv,1,5,118.07,110.78,171.87,65.28,86,Good + Minor Improvements,1
+incorrect__Cap 2026-04-26 at 19.27.59 (online-video-cutter.com)_angles.csv,2,24,74.97,71.5,178.92,56.2,82,Good + Minor Improvements,1
+incorrect__IMG_9157_angles.csv,1,24,65.32,100.35,177.35,5.78,96,Excellent Squat,0
+incorrect__IMG_9157_angles.csv,2,55,65.49,99.32,176.46,3.38,96,Excellent Squat,0
+incorrect__IMG_9157_angles.csv,3,86,61.2,95.8,174.85,6.23,96,Excellent Squat,0

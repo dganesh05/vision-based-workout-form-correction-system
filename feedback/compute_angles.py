@@ -5,7 +5,6 @@ import math
 import os
 import pandas as pd
 
-
 # ====================================
 # CONFIG
 # ====================================
@@ -206,7 +205,7 @@ def extract_single_rep_features(joints, person_name, rep_number):
 
 
 # ====================================
-# PROCESS ALL PEOPLE + ALL REPS
+# MAIN PROCESS
 # ====================================
 
 all_results = []

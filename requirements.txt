@@ -1,7 +1,0 @@
-ultralytics>=8.2,<9
-opencv-python>=4.8,<5
-
-pandas
-numpy
-tensorflow
-scikit-learn

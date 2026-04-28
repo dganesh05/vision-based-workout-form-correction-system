@@ -8,7 +8,7 @@ from pathlib import Path
 
 import torch
 
-from squat_classifier.data import SquatSequenceDataset, load_manifest, load_from_folder
+from squat_classifier.data import SquatSequenceDataset, load_manifest, load_from_folder, get_golden_reference_dataloader
 from squat_classifier.train_utils import set_seed, train_model
 
 
@@ -19,7 +19,7 @@ def parse_args() -> argparse.Namespace:
             "CNN + stacked Bi-GRU + Luong dot attention."
         )
     )
-    group = parser.add_mutually_exclusive_group(required=True)
+    group = parser.add_mutually_exclusive_group()
     group.add_argument("--manifest", type=Path, help="CSV with path,label[,split]")
     group.add_argument("--folder", type=Path, help="Folder containing .npy files (correct__/incorrect__ prefix)")
     parser.add_argument("--data-root", type=Path, default=Path("."), help="Base folder for relative paths")
@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--num-workers", type=int, default=0)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--val-ratio", type=float, default=0.2)
-    parser.add_argument("--num-joints", type=int, default=17)
+    parser.add_argument("--num-joints", type=int, default=5)
     parser.add_argument("--dims", type=int, default=3, help="Input dims per joint (use 3 for x,y,z)")
     parser.add_argument("--person-id", type=int, default=0)
     parser.add_argument("--min-confidence", type=float, default=0.0)
@@ -73,16 +73,30 @@ def main() -> None:
     args = parse_args()
     set_seed(args.seed)
 
-    if args.folder is not None:
-        samples = load_from_folder(args.folder)
-    else:
-        samples = load_manifest(manifest_path=args.manifest, data_root=args.data_root)
+    print("Using only model_ready_reps data for training and validation.")
+    # Load all data from model_ready_reps/model_ready_reps/ and split into train/val
+    from pathlib import Path
+    from squat_classifier.data import SequenceSample
+    folder = Path("model_ready_reps-20260428T224902Z-3-001/model_ready_reps/")
+    samples = []
+    for npy_file in folder.glob("*.npy"):
+        fname = npy_file.name
+        if "label_1" in fname:
+            label = "good"
+        elif "label_0" in fname:
+            label = "bad"
+        else:
+            continue
+        samples.append(SequenceSample(path=npy_file, label=label))
+    if not samples:
+        raise ValueError(f"No .npy samples found in {folder}")
 
     labels = sorted({sample.label for sample in samples})
     if len(labels) < 2:
-        raise ValueError("Need at least two classes in manifest labels (e.g., good and bad).")
+        raise ValueError("Need at least two classes in model_ready_reps labels (e.g., good and bad).")
     label_to_idx = {label: idx for idx, label in enumerate(labels)}
 
+    # Split into train/val
     train_samples, val_samples = split_samples(samples=samples, seed=args.seed, val_ratio=args.val_ratio)
 
     max_frames = args.max_frames if args.max_frames > 0 else None
@@ -91,8 +105,6 @@ def main() -> None:
         label_to_idx=label_to_idx,
         num_joints=args.num_joints,
         dims=args.dims,
-        person_id=args.person_id,
-        min_confidence=args.min_confidence,
         max_frames=max_frames,
     )
     val_dataset = SquatSequenceDataset(
@@ -100,8 +112,6 @@ def main() -> None:
         label_to_idx=label_to_idx,
         num_joints=args.num_joints,
         dims=args.dims,
-        person_id=args.person_id,
-        min_confidence=args.min_confidence,
         max_frames=max_frames,
     )
 

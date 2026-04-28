@@ -78,14 +78,20 @@ def load_sequence(
     suffix = sequence_path.suffix.lower()
     if suffix == ".npy":
         arr = np.load(sequence_path).astype(np.float32, copy=False)
+        # Accept both (T, J, C) and (T, J) shapes
+        if arr.ndim == 2:
+            # (T, J) -> (T, J, 1)
+            arr = arr[:, :, None]
         if arr.ndim != 3:
-            raise ValueError(f"Expected (T, J, C) in {sequence_path}, found {arr.shape}")
+            raise ValueError(f"Expected (T, J, C) or (T, J) in {sequence_path}, found {arr.shape}")
         if arr.shape[1] != num_joints:
             raise ValueError(
                 f"Expected {num_joints} joints in {sequence_path}, found {arr.shape[1]}"
             )
         if arr.shape[2] < dims:
-            raise ValueError(f"Expected at least {dims} channels in {sequence_path}")
+            # Pad with zeros to reach dims channels
+            pad_width = ((0, 0), (0, 0), (0, dims - arr.shape[2]))
+            arr = np.pad(arr, pad_width, mode="constant")
         return arr[:, :, :dims]
 
     if suffix == ".json":
@@ -271,3 +277,49 @@ def collate_padded_batch(
         mask[i, :seq_len] = True
 
     return padded, lengths, labels, mask
+
+
+# Utility to load all golden reference .npy files from model_ready_reps/model_ready_reps/
+from torch.utils.data import DataLoader
+def get_golden_reference_dataloader(
+    folder_path: str = "model_ready_reps/model_ready_reps/",
+    batch_size: int = 8,
+    shuffle: bool = False,
+    num_joints: int = 17,
+    dims: int = 3,
+    max_frames: int | None = None,
+    num_workers: int = 0,
+) -> DataLoader:
+    """
+    Loads all .npy files from the golden reference folder and returns a DataLoader ready for model input.
+    Labels are inferred from the filename: label_1 -> good, label_0 -> bad.
+    """
+    folder = Path(folder_path)
+    samples = []
+    for npy_file in folder.glob("*.npy"):
+        fname = npy_file.name
+        if "label_1" in fname:
+            label = "good"
+        elif "label_0" in fname:
+            label = "bad"
+        else:
+            continue
+        samples.append(SequenceSample(path=npy_file, label=label))
+    if not samples:
+        raise ValueError(f"No .npy samples found in {folder_path}")
+
+    label_to_idx = {"good": 1, "bad": 0}
+    dataset = SquatSequenceDataset(
+        samples,
+        label_to_idx,
+        num_joints=num_joints,
+        dims=dims,
+        max_frames=max_frames,
+    )
+    return DataLoader(
+        dataset,
+        batch_size=batch_size,
+        shuffle=shuffle,
+        collate_fn=collate_padded_batch,
+        num_workers=num_workers,
+    )

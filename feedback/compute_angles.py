@@ -1,10 +1,32 @@
+# feedback/compute_angles.py
+
 import json
 import math
 import os
 import pandas as pd
 
 
+# ====================================
+# CONFIG
+# ====================================
+
+# Change this depending on folder you want to test
+data_folder = "data/correct_data"
+# data_folder = "data/incorrect_data"
+
+output_file = "feedback/final_features.csv"
+
+
+# ====================================
+# ANGLE CALCULATION
+# ====================================
+
 def calculate_angle(a, b, c):
+    """
+    Calculate angle using 3 points:
+    angle ABC
+    """
+
     ba = (a[0] - b[0], a[1] - b[1])
     bc = (c[0] - b[0], c[1] - b[1])
 
@@ -22,30 +44,14 @@ def calculate_angle(a, b, c):
     return math.degrees(math.acos(cos_angle))
 
 
-def generate_feedback(avg_knee_angle, symmetry, avg_hip_angle):
-    feedback = []
-
-    # Depth / Knee check
-    if avg_knee_angle > 160:
-        feedback.append("Go deeper and bend your knees more.")
-
-    # Symmetry check (feedback only)
-    if symmetry > 15:
-        feedback.append("Maintain balanced weight on both legs.")
-
-    # Torso / Chest check
-    if avg_hip_angle < 140:
-        feedback.append("Keep your chest up and maintain a stronger torso position.")
-
-    if not feedback:
-        feedback.append("Good squat form ✅")
-
-    return " | ".join(feedback)
-
+# ====================================
+# REP DETECTION
+# ====================================
 
 def detect_rep_bottom_frames(json_path):
     """
     Detect real squat reps using:
+
     1. Local minimum knee angle
     2. Knee angle threshold
     3. Minimum frame gap
@@ -70,8 +76,10 @@ def detect_rep_bottom_frames(json_path):
         try:
             left_hip = joints[11]
             right_hip = joints[12]
+
             left_knee = joints[13]
             right_knee = joints[14]
+
             left_ankle = joints[15]
             right_ankle = joints[16]
 
@@ -96,7 +104,6 @@ def detect_rep_bottom_frames(json_path):
         except KeyError:
             continue
 
-    # Strong rep filtering
     rep_bottom_frames = []
     last_selected_frame = -999
 
@@ -117,7 +124,22 @@ def detect_rep_bottom_frames(json_path):
     return rep_bottom_frames
 
 
-def evaluate_single_rep(joints, person_name, rep_number):
+# ====================================
+# FEATURE EXTRACTION ONLY
+# NO LABEL LOGIC HERE
+# ====================================
+
+def extract_single_rep_features(joints, person_name, rep_number):
+    """
+    ONLY extract biomechanics features
+
+    No hardcoded label logic
+    No quality score
+    No fake ML
+
+    Model should learn from real data
+    """
+
     try:
         left_shoulder = joints[5]
         right_shoulder = joints[6]
@@ -131,7 +153,10 @@ def evaluate_single_rep(joints, person_name, rep_number):
         left_ankle = joints[15]
         right_ankle = joints[16]
 
-        # Knee Angles
+        # ====================================
+        # KNEE ANGLES
+        # ====================================
+
         left_knee_angle = calculate_angle(
             left_hip, left_knee, left_ankle
         )
@@ -144,7 +169,10 @@ def evaluate_single_rep(joints, person_name, rep_number):
             left_knee_angle + right_knee_angle
         ) / 2
 
-        # Hip / Torso Angles
+        # ====================================
+        # HIP ANGLES
+        # ====================================
+
         left_hip_angle = calculate_angle(
             left_shoulder, left_hip, left_knee
         )
@@ -157,48 +185,12 @@ def evaluate_single_rep(joints, person_name, rep_number):
             left_hip_angle + right_hip_angle
         ) / 2
 
-        # Symmetry
+        # ====================================
+        # LEFT-RIGHT BALANCE
+        # ====================================
+
         symmetry = abs(
             left_knee_angle - right_knee_angle
-        )
-
-        # =========================
-        # FINAL LABEL LOGIC
-        # =========================
-
-        # Only hard-fail on real squat issues
-        label = 0
-
-        if avg_knee_angle > 160:
-            label = 1
-
-        if avg_hip_angle < 140:
-            label = 1
-
-        # Symmetry is feedback only, not hard fail
-
-        # =========================
-        # QUALITY SCORE
-        # =========================
-
-        quality_score = 100
-
-        if avg_knee_angle > 160:
-            quality_score -= 40
-
-        if avg_hip_angle < 140:
-            quality_score -= 20
-
-        if symmetry > 15:
-            quality_score -= 10
-
-        quality_score = max(0, quality_score)
-
-        # Feedback
-        feedback = generate_feedback(
-            avg_knee_angle,
-            symmetry,
-            avg_hip_angle
         )
 
         return {
@@ -206,10 +198,7 @@ def evaluate_single_rep(joints, person_name, rep_number):
             "rep_number": rep_number,
             "avg_knee_angle": round(avg_knee_angle, 2),
             "avg_hip_angle": round(avg_hip_angle, 2),
-            "symmetry": round(symmetry, 2),
-            "quality_score": quality_score,
-            "label": label,
-            "feedback": feedback
+            "symmetry": round(symmetry, 2)
         }
 
     except KeyError:
@@ -222,10 +211,6 @@ def evaluate_single_rep(joints, person_name, rep_number):
 
 all_results = []
 
-# Change folder here:
-data_folder = "data/correct_data"
-# data_folder = "data/incorrect_data"
-
 for file_name in os.listdir(data_folder):
     if file_name.endswith(".json"):
         file_path = os.path.join(data_folder, file_name)
@@ -237,7 +222,7 @@ for file_name in os.listdir(data_folder):
         print(f"Detected REAL squat reps: {len(rep_frames)}")
 
         for rep_idx, rep_frame in enumerate(rep_frames, start=1):
-            result = evaluate_single_rep(
+            result = extract_single_rep_features(
                 rep_frame["joints"],
                 file_name,
                 rep_idx
@@ -249,39 +234,14 @@ for file_name in os.listdir(data_folder):
 df = pd.DataFrame(all_results)
 
 df.to_csv(
-    "feedback/final_features.csv",
+    output_file,
     index=False
 )
 
 print("\n====================================")
 print(f"Total real squat reps processed: {len(df)}")
-print("Final Rep-by-Rep Feedback System Ready ✅")
+print("Feature Extraction Complete ✅")
+print("Saved to:", output_file)
 print("====================================\n")
 
-print("\n========== FULL REP RESULTS ==========\n")
-
-for person in df["person_file"].unique():
-    print(f"\nPerson: {person}")
-
-    person_data = df[df["person_file"] == person]
-
-    for _, row in person_data.iterrows():
-        status = "Good Squat ✅" if row["label"] == 0 else "Needs Improvement ⚠️"
-
-        print(
-            f"Rep {row['rep_number']} | "
-            f"Knee Angle: {row['avg_knee_angle']} | "
-            f"Hip Angle: {row['avg_hip_angle']} | "
-            f"Symmetry: {row['symmetry']} | "
-            f"Score: {row['quality_score']} | "
-            f"{status}"
-        )
-
-        print(f"Feedback: {row['feedback']}")
-        print("-" * 60)
-
-print("\n==========================")
-print("Label Counts")
-print("==========================")
-print(df["label"].value_counts())
-print("==========================\n")
+print(df.head())

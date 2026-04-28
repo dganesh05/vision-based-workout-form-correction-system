@@ -42,7 +42,7 @@ This gives:
 
 ↓
 
-### Step 3 — Angle Extraction (`compute_angles.py`)
+### Step 3 — Angle Extraction (`feedback/compute_angles.py`)
 
 Using the keypoints, we calculate:
 
@@ -143,13 +143,13 @@ This acts as the final AI Personal Squat Coach.
 
 ### Core Files
 
-- compute_angles.py
-- build_training_data.py
-- build_training_data_v2.py
-- feedback_engine.py
-- train_model.py
-- train_model_v2.py
-- predict.py
+- feedback/compute_angles.py
+- feedback/build_training_data.py
+- feedback/build_training_data_v2.py
+- feedback/feedback_engine.py
+- feedback/train_model.py
+- feedback/train_model_v2.py
+- feedback/predict.py
 
 ### CSV Outputs
 
@@ -173,7 +173,33 @@ git pull origin feedback-transformer
 
 ---
 
-### 2. Build training dataset
+### 2. Install Python dependencies
+
+pip install -r requirements.txt
+
+---
+
+### 3. (Optional) Re-generate rep features from keypoint JSON
+
+python feedback/compute_angles.py
+
+By default this picks the first folder that exists and contains `*.json` keypoints:
+
+- `golden_reference/processed_outputs/keypoints/`
+- `outputs/keypoints/` (common local extraction output; gitignored)
+- `data/sample_keypoints/` (small committed fixtures for smoke tests)
+
+…and writes:
+
+- `feedback/final_features.csv`
+
+If you have your own keypoints folder, pass:
+
+`python feedback/compute_angles.py --input-dir path/to/keypoints_json`
+
+---
+
+### 4. Build training dataset
 
 python feedback/build_training_data_v2.py
 
@@ -183,7 +209,7 @@ training_data_v2.csv
 
 ---
 
-### 3. Train the model
+### 5. Train the model
 
 python feedback/train_model_v2.py
 
@@ -193,7 +219,7 @@ squat_model.pkl
 
 ---
 
-### 4. Run prediction demo
+### 6. Run prediction demo
 
 python feedback/predict.py
 

@@ -1,6 +1,9 @@
+import argparse
 import json
 import math
 import os
+from pathlib import Path
+
 import pandas as pd
 
 
@@ -216,23 +219,85 @@ def evaluate_single_rep(joints, person_name, rep_number):
         return None
 
 
-# ====================================
-# PROCESS ALL PEOPLE + ALL REPS
-# ====================================
+def _dir_has_keypoint_json(folder: Path) -> bool:
+    if not folder.is_dir():
+        return False
+    return any(p.suffix.lower() == ".json" for p in folder.iterdir())
 
-all_results = []
 
-# Change folder here:
-data_folder = "data/correct_data"
-# data_folder = "data/incorrect_data"
+def resolve_default_input_dir() -> Path:
+    """
+    Pick a sensible default keypoints folder for a fresh clone.
 
-for file_name in os.listdir(data_folder):
-    if file_name.endswith(".json"):
-        file_path = os.path.join(data_folder, file_name)
+    Order:
+    1) golden reference outputs (when present)
+    2) local extraction output directory (gitignored, but common during dev)
+    3) small committed sample fixtures for smoke-testing the feedback script
+    """
+    candidates = [
+        Path("golden_reference/processed_outputs/keypoints"),
+        Path("outputs/keypoints"),
+        Path("data/sample_keypoints"),
+    ]
+    for folder in candidates:
+        if _dir_has_keypoint_json(folder):
+            return folder
+    return candidates[0]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Extract rep-level squat features from YOLO-style keypoint JSON files "
+            "and write a CSV summary."
+        )
+    )
+    parser.add_argument(
+        "--input-dir",
+        default=None,
+        help=(
+            "Folder containing per-video *_keypoints.json files. "
+            "If omitted, uses the first available of: "
+            "golden_reference/processed_outputs/keypoints, outputs/keypoints, data/sample_keypoints."
+        ),
+    )
+    parser.add_argument(
+        "--output-csv",
+        default="feedback/final_features.csv",
+        help="Where to write the extracted rep features CSV.",
+    )
+    args = parser.parse_args()
+    if args.input_dir is None:
+        args.input_dir = str(resolve_default_input_dir())
+    return args
+
+
+def main() -> None:
+    args = parse_args()
+
+    data_folder = Path(args.input_dir)
+    if not data_folder.exists() or not data_folder.is_dir():
+        raise FileNotFoundError(
+            f"Input directory not found: {data_folder}. "
+            "Pass --input-dir to a folder containing keypoint JSON files."
+        )
+    if not _dir_has_keypoint_json(data_folder):
+        raise FileNotFoundError(
+            f"No .json keypoint files found in: {data_folder}. "
+            "Pass --input-dir to a folder containing keypoint JSON files."
+        )
+
+    all_results: list[dict] = []
+
+    for file_name in sorted(os.listdir(data_folder)):
+        if not file_name.endswith(".json"):
+            continue
+
+        file_path = data_folder / file_name
 
         print(f"\nProcessing person: {file_name}")
 
-        rep_frames = detect_rep_bottom_frames(file_path)
+        rep_frames = detect_rep_bottom_frames(str(file_path))
 
         print(f"Detected REAL squat reps: {len(rep_frames)}")
 
@@ -240,48 +305,56 @@ for file_name in os.listdir(data_folder):
             result = evaluate_single_rep(
                 rep_frame["joints"],
                 file_name,
-                rep_idx
+                rep_idx,
             )
 
             if result:
                 all_results.append(result)
 
-df = pd.DataFrame(all_results)
+    df = pd.DataFrame(all_results)
 
-df.to_csv(
-    "feedback/final_features.csv",
-    index=False
-)
+    output_csv = Path(args.output_csv)
+    output_csv.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(output_csv, index=False)
 
-print("\n====================================")
-print(f"Total real squat reps processed: {len(df)}")
-print("Final Rep-by-Rep Feedback System Ready ✅")
-print("====================================\n")
+    print("\n====================================")
+    print(f"Total real squat reps processed: {len(df)}")
+    print("Final Rep-by-Rep Feedback System Ready ✅")
+    print(f"Wrote: {output_csv}")
+    print("====================================\n")
 
-print("\n========== FULL REP RESULTS ==========\n")
+    if df.empty:
+        print("No reps detected. Check your input JSONs and rep detection thresholds.")
+        return
 
-for person in df["person_file"].unique():
-    print(f"\nPerson: {person}")
+    print("\n========== FULL REP RESULTS ==========\n")
 
-    person_data = df[df["person_file"] == person]
+    for person in df["person_file"].unique():
+        print(f"\nPerson: {person}")
 
-    for _, row in person_data.iterrows():
-        status = "Good Squat ✅" if row["label"] == 0 else "Needs Improvement ⚠️"
+        person_data = df[df["person_file"] == person]
 
-        print(
-            f"Rep {row['rep_number']} | "
-            f"Knee Angle: {row['avg_knee_angle']} | "
-            f"Hip Angle: {row['avg_hip_angle']} | "
-            f"Symmetry: {row['symmetry']} | "
-            f"Score: {row['quality_score']} | "
-            f"{status}"
-        )
+        for _, row in person_data.iterrows():
+            status = "Good Squat ✅" if row["label"] == 0 else "Needs Improvement ⚠️"
 
-        print(f"Feedback: {row['feedback']}")
-        print("-" * 60)
+            print(
+                f"Rep {row['rep_number']} | "
+                f"Knee Angle: {row['avg_knee_angle']} | "
+                f"Hip Angle: {row['avg_hip_angle']} | "
+                f"Symmetry: {row['symmetry']} | "
+                f"Score: {row['quality_score']} | "
+                f"{status}"
+            )
 
-print("\n==========================")
-print("Label Counts")
-print("==========================")
-print(df["label"].value_counts())
-print("==========================\n")
+            print(f"Feedback: {row['feedback']}")
+            print("-" * 60)
+
+    print("\n==========================")
+    print("Label Counts")
+    print("==========================")
+    print(df["label"].value_counts())
+    print("==========================\n")
+
+
+if __name__ == "__main__":
+    main()

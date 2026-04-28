@@ -1,0 +1,25 @@
+file_name,prediction,confidence_percent,avg_knee,avg_hip,avg_spine,issues
+original data__Copy of IMG_8582_angles.csv,Needs Improvement ⚠️,99.42,140.23,143.03,174.26,Squat depth is too shallow | Hip hinge mechanics need improvement
+original data__Copy of IMG_8561_angles.csv,Needs Improvement ⚠️,76.31,124.04,125.32,176.68,Movement pattern is stable and biomechanically strong
+original data__Copy of IMG_9957_angles.csv,Needs Improvement ⚠️,98.08,115.09,147.11,175.18,Hip hinge mechanics need improvement
+original data__Copy of Copy of IMG_9978_angles.csv,Needs Improvement ⚠️,95.67,131.55,133.7,176.27,Squat depth is too shallow
+original data__Copy of IMG_8542_angles.csv,Needs Improvement ⚠️,96.07,125.72,125.71,174.91,Squat depth is too shallow
+original data__Copy of IMG_9769_angles.csv,Needs Improvement ⚠️,98.85,144.1,143.76,176.77,Squat depth is too shallow | Hip hinge mechanics need improvement
+original data__Copy of Copy of IMG_6997_angles.csv,Needs Improvement ⚠️,95.09,120.74,124.67,175.11,Movement pattern is stable and biomechanically strong
+original data__Copy of Copy of IMG_7005_angles.csv,Needs Improvement ⚠️,98.28,129.95,140.22,177.37,Squat depth is too shallow | Hip hinge mechanics need improvement
+original data__Copy of Copy of IMG_8557_angles.csv,Needs Improvement ⚠️,80.9,127.7,131.29,174.76,Squat depth is too shallow
+golden reference__G005_45_angles.csv,Golden Reference Quality ✅,95.18,84.41,86.69,171.16,Movement pattern is stable and biomechanically strong
+golden reference__G001_side_angles.csv,Golden Reference Quality ✅,94.68,115.9,100.11,170.14,Movement pattern is stable and biomechanically strong
+original data__Copy of IMG_9794_angles.csv,Needs Improvement ⚠️,98.52,126.79,138.37,173.29,Squat depth is too shallow | Hip hinge mechanics need improvement
+original data__Copy of IMG_8566_angles.csv,Needs Improvement ⚠️,96.44,116.11,118.15,175.92,Movement pattern is stable and biomechanically strong
+golden reference__G002_45_angles.csv,Golden Reference Quality ✅,97.45,146.04,133.54,178.36,Squat depth is too shallow
+original data__Copy of Copy of IMG_8549_angles.csv,Needs Improvement ⚠️,97.59,113.51,132.07,177.09,Movement pattern is stable and biomechanically strong
+original data__Copy of IMG_8574_angles.csv,Needs Improvement ⚠️,94.19,141.48,143.64,175.45,Squat depth is too shallow | Hip hinge mechanics need improvement
+golden reference__G003_side_angles.csv,Needs Improvement ⚠️,50.77,121.86,124.93,177.54,Movement pattern is stable and biomechanically strong
+original data__Copy of IMG_9157_angles.csv,Needs Improvement ⚠️,95.81,124.28,144.78,175.65,Hip hinge mechanics need improvement
+original data__Copy of IMG_8586_angles.csv,Needs Improvement ⚠️,99.6,142.88,137.18,176.69,Squat depth is too shallow | Hip hinge mechanics need improvement
+original data__Copy of IMG_8557_angles.csv,Needs Improvement ⚠️,80.9,127.7,131.29,174.76,Squat depth is too shallow
+golden reference__G004_side_angles.csv,Golden Reference Quality ✅,66.4,112.35,121.77,177.16,Movement pattern is stable and biomechanically strong
+original data__Copy of Copy of IMG_6991_angles.csv,Needs Improvement ⚠️,95.28,131.4,140.55,177.43,Squat depth is too shallow | Hip hinge mechanics need improvement
+original data__Copy of IMG_9755_angles.csv,Needs Improvement ⚠️,95.95,142.33,144.24,173.94,Squat depth is too shallow | Hip hinge mechanics need improvement
+original data__Copy of Copy of IMG_9777_angles.csv,Needs Improvement ⚠️,93.0,122.86,130.45,176.76,Movement pattern is stable and biomechanically strong

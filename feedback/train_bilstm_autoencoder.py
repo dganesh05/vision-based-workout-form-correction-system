@@ -3,122 +3,117 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from sklearn.model_selection import train_test_split
-
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import (
     Input,
+    Bidirectional,
     LSTM,
+    Dense,
     RepeatVector,
     TimeDistributed,
-    Dense,
-    Bidirectional,
-    Dropout
+    BatchNormalization
 )
-
 from tensorflow.keras.callbacks import (
     EarlyStopping,
     ReduceLROnPlateau
 )
+from tensorflow.keras.optimizers import Adam
 
 # =====================================
 # LOAD DATA
 # =====================================
 
-print("Loading Golden Reference Training Data...")
+print("Loading Autoencoder Dataset...")
 
-X = np.load("feedback/X_golden_train.npy")
+X_train = np.load("feedback/X_golden_train.npy")
 
-print("Full Dataset Shape:", X.shape)
-
-# =====================================
-# TRAIN / VALIDATION SPLIT
-# =====================================
-
-X_train, X_val = train_test_split(
-    X,
-    test_size=0.2,
-    random_state=42,
-    shuffle=True
-)
-
-print("\nDataset Split Complete")
-print(f"Training Shape: {X_train.shape}")
-print(f"Validation Shape: {X_val.shape}")
+print("Training Shape:", X_train.shape)
 
 timesteps = X_train.shape[1]   # 41
-features = X_train.shape[2]    # 5
-
-print(f"\nTimesteps: {timesteps}")
-print(f"Features: {features}")
+features = X_train.shape[2]    # 21
 
 # =====================================
-# BUILD IMPROVED BiLSTM AUTOENCODER
+# BUILD BiLSTM AUTOENCODER
+# New Input: (41, 21)
+# Old Input: (41, 5)
 # =====================================
 
-print("\nBuilding Improved BiLSTM Autoencoder Model...")
+print("\nBuilding 3D BiLSTM Autoencoder...")
 
 inputs = Input(shape=(timesteps, features))
 
 # =====================================
 # ENCODER
-# Added dropout to prevent memorization
 # =====================================
 
-encoded = Bidirectional(
+x = Bidirectional(
     LSTM(
         64,
-        activation="tanh",
-        return_sequences=False,
-        dropout=0.30,
-        recurrent_dropout=0.20
+        return_sequences=True,
+        dropout=0.20,
+        recurrent_dropout=0.10
     )
 )(inputs)
 
-# Additional regularization
-encoded = Dropout(0.30)(encoded)
+x = Bidirectional(
+    LSTM(
+        32,
+        return_sequences=False,
+        dropout=0.20,
+        recurrent_dropout=0.10
+    )
+)(x)
 
-# =====================================
-# SMALLER BOTTLENECK
-# Reduced from 32 → 16
-# Forces real learning
-# =====================================
+x = BatchNormalization()(x)
 
-bottleneck = Dense(
-    16,
-    activation="relu"
-)(encoded)
+encoded = Dense(
+    32,
+    activation="relu",
+    name="bottleneck_features"
+)(x)
 
 # =====================================
 # DECODER
 # =====================================
 
-decoded = RepeatVector(timesteps)(bottleneck)
+x = RepeatVector(timesteps)(encoded)
 
-decoded = Bidirectional(
+x = Bidirectional(
+    LSTM(
+        32,
+        return_sequences=True,
+        dropout=0.20,
+        recurrent_dropout=0.10
+    )
+)(x)
+
+x = Bidirectional(
     LSTM(
         64,
-        activation="tanh",
         return_sequences=True,
-        dropout=0.30,
-        recurrent_dropout=0.20
+        dropout=0.20,
+        recurrent_dropout=0.10
     )
-)(decoded)
+)(x)
 
-decoded = Dropout(0.30)(decoded)
-
-outputs = TimeDistributed(
+decoded = TimeDistributed(
     Dense(features)
-)(decoded)
+)(x)
 
-model = Model(inputs, outputs)
+# =====================================
+# FINAL MODEL
+# =====================================
+
+model = Model(inputs, decoded)
 
 # =====================================
 # COMPILE
 # =====================================
 
 model.compile(
-    optimizer="adam",
+    optimizer=Adam(
+        learning_rate=0.0005
+    ),
     loss="mse"
 )
 
@@ -130,7 +125,7 @@ model.summary()
 
 early_stop = EarlyStopping(
     monitor="val_loss",
-    patience=20,
+    patience=12,
     restore_best_weights=True,
     verbose=1
 )
@@ -138,57 +133,41 @@ early_stop = EarlyStopping(
 reduce_lr = ReduceLROnPlateau(
     monitor="val_loss",
     factor=0.5,
-    patience=7,
-    min_lr=0.00001,
+    patience=4,
+    min_lr=0.00005,
     verbose=1
 )
 
 # =====================================
-# TRAIN MODEL
+# TRAIN
+# Autoencoder = X → X
 # =====================================
 
-print("\nStarting Improved Training...\n")
+print("\nStarting 3D Autoencoder Training...\n")
 
 history = model.fit(
     X_train,
     X_train,
-    validation_data=(X_val, X_val),
+    validation_split=0.20,
     epochs=100,
-    batch_size=8,
-    shuffle=True,
+    batch_size=16,
     callbacks=[early_stop, reduce_lr],
     verbose=1
 )
 
 # =====================================
-# FINAL VALIDATION EVALUATION
+# SAVE MODEL
 # =====================================
 
-print("\nEvaluating Final Validation Loss...")
-
-val_loss = model.evaluate(
-    X_val,
-    X_val,
-    verbose=0
+model.save(
+    "feedback/final_bilstm_autoencoder_3d.keras"
 )
 
-print(f"\nFinal Validation Loss: {val_loss:.4f}")
+print("\nSaved:")
+print("- feedback/final_bilstm_autoencoder_3d.keras")
 
 # =====================================
-# SAVE MODEL
-# Use .keras instead of old .h5
-# =====================================
-
-model.save("feedback/final_bilstm_autoencoder.keras")
-
-print("\n===================================")
-print("FINAL IMPROVED BiLSTM TRAINING COMPLETE")
-print("===================================")
-print("Saved:")
-print("- feedback/final_bilstm_autoencoder.keras")
-
-# =====================================
-# PLOT LOSS CURVE
+# LOSS CURVE
 # =====================================
 
 plt.figure(figsize=(10, 6))
@@ -203,15 +182,18 @@ plt.plot(
     label="Validation Loss"
 )
 
-plt.title("Improved BiLSTM Autoencoder Loss Curve")
+plt.title("3D BiLSTM Autoencoder Loss Curve")
 plt.xlabel("Epochs")
-plt.ylabel("MSE Loss")
+plt.ylabel("Reconstruction Loss (MSE)")
 plt.legend()
 
-plt.savefig("feedback/loss_curve.png")
+plt.savefig(
+    "feedback/autoencoder_loss_curve_3d.png"
+)
+
 plt.show()
 
-print("\nSaved:")
-print("- feedback/loss_curve.png")
+print("Saved:")
+print("- feedback/autoencoder_loss_curve_3d.png")
 
-print("\nSystem Ready 🚀")
+print("\nDone 🚀")

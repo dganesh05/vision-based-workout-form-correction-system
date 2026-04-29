@@ -1,250 +1,105 @@
-# Vision-Based Workout Form Correction System
+## How To Test / Access My Work
 
-## Branch: feedback-transformer
-
-This branch contains the full squat analysis and feedback pipeline for our Computer Vision project.
-
-The goal is to automatically evaluate squat form using pose estimation, angle extraction, machine learning classification, and personalized feedback generation.
-
----
-
-## What I Worked On
-
-I focused mainly on:
-
-- rep-by-rep squat detection
-- angle extraction and biomechanics analysis
-- training dataset creation
-- machine learning model training
-- prediction system
-- personalized feedback engine
-
-This branch handles the full feedback + ML pipeline.
-
----
-
-## Project Flow
-
-### Step 1 — Video Input
-
-User records a squat video from front, back, or side angle.
-
-↓
-
-### Step 2 — MotionBERT / Pose Estimation
-
-MotionBERT extracts 3D body keypoints from the video.
-
-This gives:
-
-- body joint coordinates
-- frame-by-frame pose landmarks
-
-↓
-
-### Step 3 — Angle Extraction (`feedback/compute_angles.py`)
-
-Using the keypoints, we calculate:
-
-- Right Knee Angle
-- Left Knee Angle
-- Right Hip Angle
-- Left Hip Angle
-- Average Knee Angle
-- Average Hip Angle
-- Spine Lean
-- Knee Symmetry
-
-The script also detects squat reps using the bottom position of each squat (local minimum knee angle).
-
-Output:
-
-final_features.csv
-
-↓
-
-### Step 4 — Build Training Dataset (`build_training_data_v2.py`)
-
-This combines:
-
-- data/angles_csv/correct
-- data/angles_csv/incorrect
-
-and creates the final rep-by-rep training dataset.
-
-Output:
-
-training_data_v2.csv
-
-Current dataset size:
-
-- 131 total reps
-
-↓
-
-### Step 5 — Model Training (`train_model_v2.py`)
-
-We train a Random Forest Classifier using:
-
-Features:
-
-- avg_knee_angle
-- avg_hip_angle
-- spine_lean
-- knee_symmetry
-
-Important:
-
-No hardcoded rule-based labels are used for model training.
-
-The model learns from reviewed squat data instead of fixed threshold logic.
-
-Final Model Performance:
-
-- Accuracy: 88.89%
-
-Feature Importance:
-
-1. Knee Symmetry
-2. Hip Angle
-3. Knee Angle
-4. Spine Lean
-
-This means balance and symmetry were the strongest predictors.
-
-Output:
-
-squat_model.pkl
-
-↓
-
-### Step 6 — Prediction System (`predict.py`)
-
-This loads the trained model and predicts squat quality for new squat inputs.
-
-Prediction classes:
-
-- Excellent Squat
-- Good Squat + Minor Improvements
-- Needs Major Improvement
-
-It also gives explainable feedback like:
-
-- Go deeper
-- Improve balance
-- Keep chest up
-- Improve hip positioning
-
-This acts as the final AI Personal Squat Coach.
-
----
-
-## Files Added / Updated
-
-### Core Files
-
-- feedback/compute_angles.py
-- feedback/build_training_data.py
-- feedback/build_training_data_v2.py
-- feedback/feedback_engine.py
-- feedback/train_model.py
-- feedback/train_model_v2.py
-- feedback/predict.py
-
-### CSV Outputs
-
-- final_features.csv
-- final_feedback_results.csv
-- training_data.csv
-- training_data_v2.csv
-
-### Model File
-
-- squat_model.pkl
-
----
-
-## How To Review My Work
-
-### 1. Pull this branch
+### Step 1 — Switch to this branch
 
 git checkout feedback-transformer
 git pull origin feedback-transformer
 
----
-
-### 2. Install Python dependencies
-
-pip install -r requirements.txt
+This branch contains the full feedback + ML pipeline.
 
 ---
 
-### 3. (Optional) Re-generate rep features from keypoint JSON
+### Step 2 — Build the training dataset
 
-python feedback/compute_angles.py
-
-By default this picks the first folder that exists and contains `*.json` keypoints:
-
-- `golden_reference/processed_outputs/keypoints/`
-- `outputs/keypoints/` (common local extraction output; gitignored)
-- `data/sample_keypoints/` (small committed fixtures for smoke tests)
-
-…and writes:
-
-- `feedback/final_features.csv`
-
-If you have your own keypoints folder, pass:
-
-`python feedback/compute_angles.py --input-dir path/to/keypoints_json`
-
----
-
-### 4. Build training dataset
+Run:
 
 python feedback/build_training_data_v2.py
 
-This generates:
+This combines:
+
+- correct squat files
+- incorrect squat files
+
+from:
+
+data/angles_csv/
+
+and creates:
 
 training_data_v2.csv
 
+This is the final rep-by-rep training dataset.
+
 ---
 
-### 5. Train the model
+### Step 3 — Train the model
+
+Run:
 
 python feedback/train_model_v2.py
 
-This trains the Random Forest model and saves:
+This trains the Random Forest model using:
+
+- knee angle
+- hip angle
+- spine lean
+- knee symmetry
+
+and saves:
 
 squat_model.pkl
 
+You will also see:
+
+- accuracy
+- confusion matrix
+- feature importance
+
+Final model accuracy is around:
+
+88–90%
+
 ---
 
-### 6. Run prediction demo
+### Step 4 — Run final prediction demo
+
+Run:
 
 python feedback/predict.py
 
-This shows final squat prediction + personalized feedback output.
+This loads the trained model and predicts squat quality for a new squat sample.
+
+It outputs:
+
+- squat classification
+- improvement areas
+- personalized coaching feedback
+
+Example:
+
+Excellent Squat
+Go slightly deeper
+Improve balance
+
+This is the final demo output.
 
 ---
 
-## Final Goal
+### Step 5 — Review important files
 
-Final system should work like:
+Main files to check:
 
-Video Upload
-→ MotionBERT
-→ 3D Keypoints
-→ Angle Extraction
-→ Model Prediction
-→ Feedback Engine
-→ Final Squat Coaching Output
+- feedback/compute_angles.py
+- feedback/build_training_data_v2.py
+- feedback/train_model_v2.py
+- feedback/predict.py
+- feedback/feedback_engine.py
 
----
+Main outputs:
 
-## Notes
+- feedback/final_features.csv
+- feedback/final_feedback_results.csv
+- feedback/training_data_v2.csv
+- feedback/squat_model.pkl
 
-- feedback logic is explainable and biomechanics-based
-- model training avoids hardcoded threshold labels
-- real squat videos are used for validation
-- more video testing will improve final accuracy
-
+These contain the full final workflow.

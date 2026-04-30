@@ -1,105 +1,129 @@
-## How To Test / Access My Work
+## How To Test / Access My Work (BiLSTM Baseline Model)
 
 ### Step 1 — Switch to this branch
 
-git checkout feedback-transformer
-git pull origin feedback-transformer
+git checkout bilstm-baseline-model  
+git pull origin bilstm-baseline-model  
 
-This branch contains the full feedback + ML pipeline.
-
----
-
-### Step 2 — Build the training dataset
-
-Run:
-
-python feedback/build_training_data_v2.py
-
-This combines:
-
-- correct squat files
-- incorrect squat files
-
-from:
-
-data/angles_csv/
-
-and creates:
-
-training_data_v2.csv
-
-This is the final rep-by-rep training dataset.
+This branch contains the clean baseline model using a BiLSTM Autoencoder + rule-based feedback system.
 
 ---
 
-### Step 3 — Train the model
+### Step 2 — Build the dataset
 
 Run:
 
-python feedback/train_model_v2.py
+python feedback/build_autoencoder_dataset.py  
 
-This trains the Random Forest model using:
+This script:
 
-- knee angle
-- hip angle
-- spine lean
-- knee symmetry
+- loads squat `.npy` files from  
+  data/model_ready_reps/  
+- separates:
+  - golden reference squats (correct)
+  - original user squats (test data)
+- reshapes data from (41, 7, 3) → (41, 21)
+- applies MinMax normalization (fit only on golden data)
 
-and saves:
+Outputs:
 
-squat_model.pkl
-
-You will also see:
-
-- accuracy
-- confusion matrix
-- feature importance
-
-Final model accuracy is around:
-
-88–90%
+- feedback/X_golden_train.npy  
+- feedback/X_user_test.npy  
+- feedback/golden_scaler.pkl  
 
 ---
 
-### Step 4 — Run final prediction demo
+### Step 3 — Train the BiLSTM Autoencoder
 
 Run:
 
-python feedback/predict.py
+python feedback/train_bilstm_autoencoder.py  
 
-This loads the trained model and predicts squat quality for a new squat sample.
+This trains the model using only correct squat data.
 
-It outputs:
+Model learns:
 
-- squat classification
-- improvement areas
-- personalized coaching feedback
+- ideal squat motion patterns  
+- temporal movement behavior  
 
-Example:
+Saved outputs:
 
-Excellent Squat
-Go slightly deeper
-Improve balance
+- feedback/final_bilstm_autoencoder_3d.keras  
+- feedback/autoencoder_loss_curve_3d.png  
 
-This is the final demo output.
+---
+
+### Step 4 — Run prediction and feedback
+
+Run:
+
+python feedback/predict_autoencoder_quality.py  
+
+This:
+
+- loads trained model + scaler  
+- runs prediction on user squat data  
+- reconstructs input sequences  
+- calculates:
+  - reconstruction error  
+  - max deviation  
+
+Then applies rule-based logic to generate:
+
+- squat quality classification  
+- failure type (depth, valgus, lean, etc.)  
+- performance score (0–100)  
+- personalized feedback  
+
+Saved output:
+
+- feedback/final_prediction_results.csv  
 
 ---
 
 ### Step 5 — Review important files
 
-Main files to check:
+Main pipeline files:
 
-- feedback/compute_angles.py
-- feedback/build_training_data_v2.py
-- feedback/train_model_v2.py
-- feedback/predict.py
-- feedback/feedback_engine.py
+- feedback/build_autoencoder_dataset.py  
+- feedback/train_bilstm_autoencoder.py  
+- feedback/predict_autoencoder_quality.py  
 
 Main outputs:
 
-- feedback/final_features.csv
-- feedback/final_feedback_results.csv
-- feedback/training_data_v2.csv
-- feedback/squat_model.pkl
+- feedback/X_golden_train.npy  
+- feedback/X_user_test.npy  
+- feedback/final_bilstm_autoencoder_3d.keras  
+- feedback/final_prediction_results.csv  
+- feedback/autoencoder_loss_curve_3d.png  
 
-These contain the full final workflow.
+---
+
+### Key Idea
+
+This model does NOT directly classify squats.
+
+Instead:
+
+- learns correct squat patterns  
+- detects deviations using anomaly detection  
+- converts deviations into meaningful feedback  
+
+---
+
+### Example Output
+
+Failure Type: Knee Valgus ❌  
+Performance Score: 67  
+Level: Beginner+  
+Feedback: Improve knee tracking  
+
+---
+
+### Summary
+
+This baseline model provides:
+
+- anomaly detection for squat quality  
+- interpretable biomechanical feedback  
+- a strong foundation for the final model (Bi-CGRU with Attention)

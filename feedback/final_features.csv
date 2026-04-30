@@ -1,0 +1,66 @@
+person_file,rep_number,avg_knee_angle,avg_hip_angle,symmetry,quality_score,label,feedback
+correct__IMG_7003_keypoints.json,1,135.29,146.27,12.65,100,0,Good squat form ✅
+correct__IMG_7003_keypoints.json,2,139.63,146.62,14.66,100,0,Good squat form ✅
+correct__IMG_7003_keypoints.json,3,137.84,145.09,6.24,100,0,Good squat form ✅
+correct__IMG_7003_keypoints.json,4,137.53,146.26,8.93,100,0,Good squat form ✅
+correct__IMG_7003_keypoints.json,5,143.21,152.22,16.49,90,0,Maintain balanced weight on both legs.
+correct__IMG_9776_keypoints.json,1,20.57,19.39,12.31,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9776_keypoints.json,2,25.01,22.14,7.84,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9776_keypoints.json,3,22.42,23.12,4.73,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_8555_keypoints.json,1,114.28,105.87,22.29,70,1,Maintain balanced weight on both legs. | Keep your chest up and maintain a stronger torso position.
+correct__IMG_9777_keypoints.json,1,50.65,53.42,7.08,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9777_keypoints.json,2,49.68,47.11,5.7,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9777_keypoints.json,3,54.24,54.65,6.58,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7005_keypoints.json,1,63.94,80.78,6.53,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7005_keypoints.json,2,83.7,98.43,4.49,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7005_keypoints.json,3,64.99,78.7,6.81,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7005_keypoints.json,4,67.73,79.49,9.14,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7005_keypoints.json,5,63.91,77.19,10.94,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9795_keypoints.json,1,73.74,71.39,2.76,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9795_keypoints.json,2,25.94,24.56,3.34,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9795_keypoints.json,3,73.17,72.9,8.76,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_8536_keypoints.json,1,19.51,17.58,4.05,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_8536_keypoints.json,2,17.63,16.0,2.24,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7007_keypoints.json,1,20.65,17.1,21.64,70,1,Maintain balanced weight on both legs. | Keep your chest up and maintain a stronger torso position.
+correct__IMG_7007_keypoints.json,2,34.56,33.88,8.38,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7007_keypoints.json,3,25.94,23.28,11.78,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_7007_keypoints.json,4,29.81,26.88,6.49,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_8557_keypoints.json,1,62.55,50.28,5.57,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9774_keypoints.json,1,110.11,114.86,9.65,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9774_keypoints.json,2,100.51,108.91,7.02,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_9774_keypoints.json,3,90.37,101.79,15.05,70,1,Maintain balanced weight on both legs. | Keep your chest up and maintain a stronger torso position.
+correct__IMG_6991_keypoints.json,1,60.61,56.65,9.54,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6991_keypoints.json,2,68.99,70.17,2.91,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6991_keypoints.json,3,58.94,50.68,11.4,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6991_keypoints.json,4,61.11,49.51,6.84,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6991_keypoints.json,5,58.46,57.72,8.12,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6991_keypoints.json,6,58.12,50.29,10.76,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6998_keypoints.json,1,47.4,41.85,6.72,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6998_keypoints.json,2,48.91,44.22,5.76,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6998_keypoints.json,3,43.78,38.81,3.21,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6998_keypoints.json,4,42.88,38.81,7.81,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6998_keypoints.json,5,43.92,39.36,5.29,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_8564_keypoints.json,1,64.62,58.59,6.85,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,1,73.25,67.69,1.38,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,2,71.0,65.67,1.71,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,3,88.84,91.57,10.9,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,4,79.77,77.95,1.1,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,5,96.16,105.73,6.05,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,6,60.89,64.2,31.94,70,1,Maintain balanced weight on both legs. | Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,7,64.47,68.99,27.01,70,1,Maintain balanced weight on both legs. | Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,8,61.2,65.2,30.34,70,1,Maintain balanced weight on both legs. | Keep your chest up and maintain a stronger torso position.
+correct__IMG_6997_keypoints.json,9,63.7,75.26,28.01,70,1,Maintain balanced weight on both legs. | Keep your chest up and maintain a stronger torso position.
+correct__IMG_6995_keypoints.json,1,115.9,118.14,3.14,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6995_keypoints.json,2,111.44,113.53,0.24,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6995_keypoints.json,3,109.4,111.76,9.26,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6995_keypoints.json,4,106.96,109.22,3.41,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6995_keypoints.json,5,109.92,112.81,2.17,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6992_keypoints.json,1,23.83,19.4,7.86,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6992_keypoints.json,2,21.39,17.16,4.39,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6992_keypoints.json,3,15.71,9.95,5.18,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6992_keypoints.json,4,15.48,10.65,4.06,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6989_keypoints.json,1,143.01,149.87,5.14,100,0,Good squat form ✅
+correct__IMG_6989_keypoints.json,2,109.82,113.58,4.33,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6989_keypoints.json,3,104.37,105.87,2.29,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6989_keypoints.json,4,90.84,92.15,7.44,80,1,Keep your chest up and maintain a stronger torso position.
+correct__IMG_6989_keypoints.json,5,108.31,108.78,10.46,80,1,Keep your chest up and maintain a stronger torso position.
